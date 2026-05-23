@@ -13,7 +13,7 @@ import os
 from contextlib import contextmanager
 
 _db_dir = os.environ.get("DB_DIR", os.path.dirname(os.path.abspath(__file__)))
-DB_PATH  = os.path.join(_db_dir, "kost.db")
+DB_PATH  = os.path.join(_db_dir,"data", "kost.db")
 SCHEMA_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "schema.sql")
 
 
