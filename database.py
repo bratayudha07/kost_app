@@ -12,8 +12,9 @@ import hashlib
 import os
 from contextlib import contextmanager
 
-DB_PATH = "kost.db"
-SCHEMA_PATH = os.path.join(os.path.dirname(__file__), "schema.sql")
+_db_dir = os.environ.get("DB_DIR", os.path.dirname(os.path.abspath(__file__)))
+DB_PATH  = os.path.join(_db_dir, "kost.db")
+SCHEMA_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "schema.sql")
 
 
 # ─── Koneksi & Inisialisasi ───────────────────────────────────────────────────
