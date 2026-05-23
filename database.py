@@ -39,7 +39,7 @@ def init_db():
     with get_conn() as conn:
         with open(SCHEMA_PATH, "r") as f:
             conn.executescript(f.read())
-        hashed = _hash("admin123")
+        hashed = _hash("kelompok5")
         conn.execute(
             "INSERT OR IGNORE INTO users (username, password) VALUES (?, ?)",
             ("admin", hashed)
