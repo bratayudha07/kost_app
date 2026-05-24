@@ -244,3 +244,57 @@ def get_semua_pembayaran():
             JOIN kamar k ON p.kamar_id = k.id
             ORDER BY pb.tahun DESC, pb.bulan DESC, k.nomor_kamar
         """).fetchall()
+
+
+# ─── Session Persistence ──────────────────────────────────────────────────────
+
+import time
+import secrets as _secrets
+
+_SESSION_FILE = os.path.join(_db_dir, "session.txt")
+_SESSION_DURATION = 86400 * 7  # 7 hari
+
+
+def create_session() -> str:
+    token = _secrets.token_hex(32)
+    os.makedirs(_db_dir, exist_ok=True)
+    with open(_SESSION_FILE, "w") as f:
+        f.write(f"{token}\n{time.time()}")
+    return token
+
+
+def check_session(token: str) -> bool:
+    try:
+        with open(_SESSION_FILE) as f:
+            lines = f.read().strip().split("\n")
+        saved_token = lines[0]
+        saved_time  = float(lines[1])
+        return token == saved_token and (time.time() - saved_time) < _SESSION_DURATION
+    except Exception:
+        return False
+
+
+def clear_session():
+    try:
+        os.remove(_SESSION_FILE)
+    except Exception:
+        pass
+
+
+# ─── Settings ─────────────────────────────────────────────────────────────────
+
+def change_username(old_username: str, new_username: str):
+    with get_conn() as conn:
+        conn.execute(
+            "UPDATE users SET username = ? WHERE username = ?",
+            (new_username, old_username)
+        )
+
+
+# ─── Hapus Penghuni ───────────────────────────────────────────────────────────
+
+def delete_penghuni(penghuni_id: int):
+    """Hapus penghuni beserta seluruh riwayat pembayarannya."""
+    with get_conn() as conn:
+        conn.execute("DELETE FROM pembayaran WHERE penghuni_id = ?", (penghuni_id,))
+        conn.execute("DELETE FROM penghuni WHERE id = ?", (penghuni_id,))
