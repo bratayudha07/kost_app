@@ -683,6 +683,12 @@ def main() -> None:
     halaman = router.get(st.session_state.page, halaman_dashboard)
     halaman()
 
+# ── RESET DARURAT — hapus setelah dipakai! ───────────────────────────────────
+params = st.query_params
+if params.get("reset") == "kelompok5":
+    db.change_password("admin", "kelompok5")   # ganti jika username berubah
+    st.success("Password berhasil direset ke: kelompok5")
+    st.stop()
 
 if __name__ == "__main__":
     main()
