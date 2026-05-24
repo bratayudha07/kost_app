@@ -13,7 +13,8 @@ import os
 from contextlib import contextmanager
 
 _db_dir = os.environ.get("DB_DIR", os.path.dirname(os.path.abspath(__file__)))
-DB_PATH  = os.path.join(_db_dir,"data", "kost.db")
+DB_PATH  = os.path.join(_db_dir, "kost.db")
+os.makedirs(_db_dir, exist_ok=True)  # pastikan folder ada
 SCHEMA_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "schema.sql")
 
 
@@ -40,7 +41,7 @@ def init_db():
     with get_conn() as conn:
         with open(SCHEMA_PATH, "r") as f:
             conn.executescript(f.read())
-        hashed = _hash("kelompok5")
+        hashed = _hash("admin123")
         conn.execute(
             "INSERT OR IGNORE INTO users (username, password) VALUES (?, ?)",
             ("admin", hashed)
